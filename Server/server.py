@@ -33,6 +33,33 @@ def api_all_owners():
     pets = cursor.fetchall()
     return jsonify(pets)
 
+@app.route('/api/pets/checkin', methods=['PUT'])
+def api_pet_checkin():
+    checked_in = request.form['checked_in']
+    id = request.form['id']
+    try:
+        connection = psycopg2.connect(user="maxmaher",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="pet_hotel")
+        cursor = connection.cursor()
+        putQuery = "UPDATE pets SET checked_in = %s WHERE id = %s;"
+        cursor.execute(putQuery, (checked_in, id))
+        connection.commit()
+        count = cursor.rowcount
+        print(count, "Pet updated")
+        result = {'status': 'UPDATED'}
+        return make_response(jsonify(result), 200)
+    except (Exception, psycopg2.Error) as error:
+        if(connection):
+            print("failed to update pet", error)
+            result = {'status': 'ERROR'}
+            return make_response(jsonify(result), 500)
+    finally:
+        if(connection):
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")
 
 @app.route('/api/owners/add', methods=['POST'])
 def api_add_owner():
