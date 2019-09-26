@@ -102,4 +102,65 @@ def api_post_pet():
             connection.close()
             print("PostgreSQL connection is closed")
 
+@app.route('/api/pets/delete', methods=['DELETE'])
+def api_pet_delete():
+    id = request.form['id']
+    print(id)
+    try:
+        connection = psycopg2.connect(user="dmjbernardin",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="pet_hotel")
+
+        cursor = connection.cursor()
+        print(id)
+        insertQuery = "DELETE FROM pets WHERE id = %s;"
+        cursor.execute(insertQuery, (id,))
+        connection.commit()
+        count = cursor.rowcount
+        print(count, "deleted")
+        result = {'status': 'DELETED'}
+        return make_response(jsonify(result), 200)
+    except (Exception, psycopg2.Error) as error:
+        if(connection):
+            print("Failed to DELETE", error)
+            result = {'status': 'ERROR'}
+            return make_response(jsonify(result), 500)
+    finally:
+        if(connection):
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")
+
+
+@app.route('/api/owner/delete', methods=['DELETE'])
+def api_owners_delete():
+    id = request.form['id']
+    print(id)
+    try:
+        connection = psycopg2.connect(user="dmjbernardin",
+                                      host="127.0.0.1",
+                                      port="5432",
+                                      database="pet_hotel")
+
+        cursor = connection.cursor()
+        print(id)
+        insertQuery = "DELETE FROM owners WHERE id = %s;"
+        cursor.execute(insertQuery, (id,))
+        connection.commit()
+        count = cursor.rowcount
+        print(count, "deleted")
+        result = {'status': 'DELETED'}
+        return make_response(jsonify(result), 200)
+    except (Exception, psycopg2.Error) as error:
+        if(connection):
+            print("Failed to DELETE", error)
+            result = {'status': 'ERROR'}
+            return make_response(jsonify(result), 500)
+    finally:
+        if(connection):
+            cursor.close()
+            connection.close()
+            print("PostgreSQL connection is closed")
+
 app.run(debug=True)
