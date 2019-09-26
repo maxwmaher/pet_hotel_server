@@ -21,6 +21,18 @@ def api_all():
     pets = cursor.fetchall()
     return jsonify(pets)
 
+@app.route('/api/owners/all', methods=['GET'])
+def api_all_owners():
+    connection = psycopg2.connect(user="maxmaher",
+                                  host="127.0.0.1",
+                                  port="5432",
+                                  database="pet_hotel")
+    cursor = connection.cursor()
+    postgreSQL_select_Query = 'SELECT "owners"."id", "owners"."name", count("pets".owner_id) FROM "owners" JOIN "pets" ON "pets"."owner_id" = "owners"."id" GROUP BY "owners"."id";'
+    cursor.execute(postgreSQL_select_Query)
+    pets = cursor.fetchall()
+    return jsonify(pets)
+
 
 @app.route('/api/owners/add', methods=['POST'])
 def api_add_owner():
