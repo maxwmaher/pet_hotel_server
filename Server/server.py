@@ -161,7 +161,7 @@ def api_pet_delete():
             print("PostgreSQL connection is closed")
 
 
-@app.route('/api/owner/delete', methods=['DELETE'])
+@app.route('/api/owners/delete', methods=['DELETE'])
 def api_owners_delete():
     id = request.form['id']
     print(id)
